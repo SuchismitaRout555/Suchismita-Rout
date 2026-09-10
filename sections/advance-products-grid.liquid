@@ -1,0 +1,304 @@
+{{ 'adv-product-grid.css' | asset_url | stylesheet_tag }}
+
+
+<section id="adv-grid-{{ section.id }}" class="advance-product-grid section-{{ section.id }}-padding">
+ <div class="page-width">
+    {% comment %} main product grid {% endcomment %}
+     <h1>{{ section.settings.adv-grid-heading }}</h1>
+    <div class="row g-2 g-md-0 px-4">
+        {% for block in section.blocks %}
+            {%- assign product = block.settings.product-sl -%}
+            {% if product %}
+            <div class="col-6 col-md-4 card-block-{{ block.id }}" {{ block.shopify_attributes }}>
+                <div class="adv-product-card"  >
+                    {% if product.featured_image %}
+                     <img src="{{ product.featured_image | image_url: width: 800 }}" width="auto" height="auto" alt="{{ product.title }}" class="adv-product-img" >
+                     <button data-target="modal-{{ block.id }}" class="btn-sl hotspot-btn">
+                        <img src="{{ section.settings.hotspot-icon | image_url: width: 100 }}" height="auto" width="auto" >
+                     </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% comment %} Hideen Modal Containing Product Data {% endcomment %}
+             <template id="modal-{{ block.id }}">
+               
+{% comment %} upper row {% endcomment %}
+<div class="row">
+  {% comment %} img left part {% endcomment %}
+  <div class="col-5">
+    {% if product.featured_image %}
+    <div class="img-box">
+      <img
+        src="{{ product.featured_image | image_url: width: 800 }}"
+        width="auto"
+        height="auto"
+        alt="{{ product.title }}"
+        class="adv-product-img"
+      />
+    </div>
+    {% endif %}
+  </div>
+  {% comment %} content-right part {% endcomment %}
+  <div class="col-7 details-box d-flex flex-column align-items-start">
+    <h3 class="m-0 mt-2">{{ product.title }}</h3>
+    <p>{{ product.price | money_with_currency }}</p>
+    <div class="modal-description">{{ product.description | strip_html }}</div>
+  </div>
+</div>
+{% comment %} bottom part {% endcomment %}
+<div class="row modal-bottom">
+  <form
+    method="post"
+    action="{{ routes.cart_add_url }} "
+    class="adv-modal-form"
+    data-product-id="{{ product.id }}"
+  >
+    <input type="hidden" name="id" value="" />
+   <div class="d-flex flex-column-reverse">
+    {%- for option in product.options_with_values -%}
+       
+    <div class="mb-3 d-flex flex-column">
+    <label>{{ option.name }}</label>
+    {% assign option_name = option.name %}
+    {% assign option_name_down = option.name | downcase %}
+
+    {%- if option_name_down contains 'color' or option_name_down contains 'colour' -%}
+      <!-- Color Pills -->
+      <div class="d-flex color-pills-box" data-option="{{ option.name }}">
+        {% for value in option.values %}
+          <div class="d-flex pill-swatch-box">
+            <span
+              class="pill-swatch"
+              style="background: {{ value | escape }}"
+            ></span>
+            <button
+              class="adv-grid-pill d-flex justify-content-start align-items-center"
+              type="button"
+              data-option="{{ option_name }}"
+              data-value="{{ value }}"
+            >
+              <span class="pill-label">{{ value }}</span>
+            </button>
+          </div>
+        {% endfor %}
+        <!-- dedicated hidden input for pills -->
+        <input
+          type="hidden"
+          class="hidden-input-pill"
+          name="options[{{ option_name }}]"
+          value=""
+        />
+      </div>
+      
+      {% else %}
+          <div class="custom-select-wrapper" data-option="{{ option.name }}">
+        <div class="custom-select-trigger">
+          <span class="default-option-text" style="display:none;">Choose {{ option.name }}</span>
+          <span class="trigger-label">Choose {{ option.name }}</span>
+          <div class="arrow">
+            <img src="{{ 'down-chevron.svg' | asset_url }}" width="auto" height="auto" />
+          </div>
+        </div>
+        <div class="custom-options">
+          {% for value in option.values %}
+            <span class="custom-option" data-value="{{ value }}">{{ value }}</span>
+          {% endfor %}
+        </div>
+        <!-- dedicated hidden input for dropdown -->
+        <input
+          type="hidden"
+          class="hidden-input-select"
+          name="options[{{ option_name }}]"
+          value=""
+        />
+      </div>
+      {%- endif -%}
+    </div>
+ 
+    {%- endfor -%}
+     </div>
+    <button type="submit" class="btn-sl-atc" >Add To Cart</button>
+  </form>
+  <script type="application/json" class="adv-grid-json">
+{
+  "id": {{ product.id | json }},
+  "title": {{ product.title | json }},
+  "options": {{ product.options | json }},
+  "variants": [
+    {% for variant in product.variants %}
+      {
+        "id": {{ variant.id | json }},
+        "available": {{ variant.available | json }},
+        "price": {{ variant.price | json }},
+        "option1": {{ variant.option1 | json }},
+        "option2": {{ variant.option2 | json }},
+        "option3": {{ variant.option3 | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+}
+</script>
+
+</div>
+
+             </template>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% comment %} overlay {% endcomment %}
+
+    <div class="popup-overlay-sl"></div>
+
+    {% comment %} pop up modal {% endcomment %}
+    <div class="popup-modal-sl p-4">
+        <div class="d-flex justify-content-end">
+            <button class="btn-sl close-btn">
+            <img src="{{ 'close-icon-sl.svg' | asset_url }}" width="auto" height="auto">
+            </button>
+
+        </div>
+        <div class="popup-content">
+            product data here
+        </div>
+    </div>
+
+    {% comment %} GIFT PRODUCT SETTINGS {% endcomment %}
+     {% if section.settings.gift-product %}
+      {% assign gift = section.settings.gift-product %}
+      <script type="application/json" id="gift-sl" >
+      {
+        "handle": {{ gift.handle | json }},
+          "title": {{ gift.title | json  }},
+          "options": {{ gift.options | json }},
+  "variants": [
+    {% for gvariant in gift.variants %}
+      {
+        "id": {{ gvariant.id | json }},
+        "available": {{ gvariant.available | json }},
+        "price": {{ gvariant.price | json }},
+        "option1": {{ gvariant.option1 | json }},
+        "option2": {{ gvariant.option2 | json }},
+        "option3": {{ gvariant.option3 | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+      }
+      </script>
+     {% endif %}
+ </div>
+</section>
+{% style %}
+.section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{% for block in section.blocks %}
+ .card-block-{{ block.id }} {
+   --hotspot-top: {{ block.settings.hotspot-top }}%;
+   --hotspot-left: {{ block.settings.hotspot-left }}%;
+ }
+ 
+  {% endfor %}
+{% endstyle %}
+
+<script src="{{ 'adv-product-grid.js' | asset_url }}" defer ></script>
+
+{% schema %}
+    {
+        "name": "Advance Product Grid",
+        "settings": [
+          
+            {
+              "type": "text",
+              "id": "adv-grid-heading",
+              "label": "Heading",
+              "default": "Tisso vison in the wild",
+              
+            },
+          
+        {
+            "type": "image_picker",
+            "id": "hotspot-icon",
+            "label": "Hotspot Icon"
+        },
+        {
+          "type": "product",
+          "id": "gift-product",
+          "label": "Gift Product",
+          "info": "Only on buying any Black Medium Product"
+        },
+        {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+        },
+      {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 10
+      }
+        ],
+        "blocks": [
+            {
+                "type": "product_block",
+                "name": "Product",
+                "settings": [
+                    {
+                        "type": "product",
+                        "id": "product-sl",
+                        "label": "Attach Product ",
+                        "info": "Attach Product to show info"
+                    },
+                    {
+                        "type": "header",
+                        "content": "Hotspot Positions",
+                        "info": "Adjust positions to point at product"
+                    },
+                    {
+                        "type": "range",
+                        "id": "hotspot-top",
+                        "min": 5,
+                        "max": 100,
+                        "step": 1,
+                        "label": "From Top ",
+                        "default": 40
+                    },
+                    {
+                        "type": "range",
+                        "id": "hotspot-left",
+                        "min": 5,
+                        "max": 100,
+                        "step": 1,
+                        "label": "From Left ",
+                        "default": 40
+                    },
+
+                ]
+            },
+        ],
+        
+        "presets": [
+            {
+            "name": "Advance Product Grid"
+            }
+        ]
+    }
+{% endschema %}

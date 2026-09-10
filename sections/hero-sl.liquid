@@ -1,0 +1,215 @@
+{{ 'hero-sl.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="hero-sl-{{ section.id }} color-{{ section.settings.color_scheme }}"
+>
+  {% comment %} MObile Content {% endcomment %}
+  <div class="d-flex flex-column d-md-none mobile-content center">
+    <h1 class="hero-heading">{{ section.settings.hero-heading }}</h1>
+    <div class="hero-text px-4">{{ section.settings.hero-text-mobile}}</div>
+  </div>
+  {% comment %} Background Image + Content {% endcomment %}
+  <div
+    class="hero-img-container hero-height-{{ section.settings.hero-sl-height }} hero-height-mobile d-flex align-items-end justify-content-center justify-content-md-start " >
+    {% comment %} Content Desktop {% endcomment %}
+    <div class="hero-content-sl py-5">
+      <div class="page-width ms-0 ms-md-3 py-0 pt-md-4 pb-md-5 hero-content-inner d-flex flex-column">
+        <div class="d-none d-md-block">
+        <h1 class="hero-heading">{{ section.settings.hero-heading }}</h1>
+        <div class="hero-text">{{ section.settings.hero-text}}</div>
+        </div>
+        {% render 'button-sl' sst: section.settings, s_id: section.id %}
+      </div>
+    </div>
+  </div>
+  {% comment %} Hero Bottom {% endcomment %}
+  <div class="hero-bottom">
+    {% if section.settings.bottom-content != blank %}
+    <p class="center d-none d-md-block">{{ section.settings.bottom-content }}</p>
+    {% endif %}
+    {% if section.settings.bottom-content-mobile != blank %}
+    <p class="center d-block d-md-none">{{ section.settings.bottom-content-mobile }}</p>
+    {% endif %}
+
+  </div>
+</section>
+
+{% style %}
+.hero-sl-{{ section.id }} {
+  --hero-heading-size: {{ section.settings.hero_heading_size }}px;
+  --hero-height-mobile: {{ section.settings.hero-height-mobile }}px;
+  --content-width: {{ section.settings.content-width-desktop }}px;
+}
+
+  .hero-img-container {
+    background-image: url({{ section.settings.hero-bg-desktop-sl | image_url: width: 2000 }});
+  }
+
+  .hero-bottom {
+    background: {{ section.settings.hero-bottom-bg }};
+   
+  }
+
+@media (max-width: 768px) {
+  .hero-img-container {
+    {% if section.settings.hero-bg-mobile-sl != blank %}
+      background-image: url({{ section.settings.hero-bg-mobile-sl | image_url: width: 1000 }});
+    {% else %}
+      background-image: url({{ section.settings.hero-bg-desktop-sl | image_url: width: 1000 }});
+    {% endif %}
+  }
+}
+{% endstyle %}
+
+{% schema %}
+{ "name": "Hero SL",
+    "settings": [
+       {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+       },
+        {
+          "type": "header",
+          "content": "Image Settings"
+        },
+        {
+         "type": "select",
+         "id": "hero-sl-height",
+         "label": "Section Height",
+         "default": "large",
+         "options": [
+          {
+          "value": "small", "label": "Small"
+          },
+          {
+          "value": "medium", "label":  "Medium"
+          },
+          {
+          "value": "large", "label":  "Large"
+          },
+          {
+          "value": "Full", "label":  "Full"
+          },
+         ]
+         
+        },
+        {
+        "type": "range",
+        "id": "hero-height-mobile",
+        "label": "Height Mobile",
+        "min": 200,
+        "max": 500,
+        "step": 10,
+        "default": 300
+        },
+        {
+            "type": "image_picker", 
+            "id": "hero-bg-desktop-sl",
+            "label": "Background Desktop",
+
+        },
+        {
+            "type": "image_picker", 
+            "id": "hero-bg-mobile-sl",
+            "label": "Background Mobile",
+
+        },
+        {
+          "type": "header",
+          "content": "Content Settings"
+        },
+        {
+          "type": "range",
+          "id": "content-width-desktop",
+          "label": "Content Width",
+          "min": 500,
+          "max": 800,
+          "step": 10,
+          "default": 660
+        },
+        {
+        "type": "text",
+        "id": "hero-heading",
+        "label": "Heading",
+        "default": "The Gift Guide"
+        },
+        {
+  "type": "range",
+  "id": "hero_heading_size",
+  "label": "Heading size",
+  "min": 12,
+  "max": 80,
+  "step": 1,
+  "unit": "px",
+  "default": 32
+},
+        {
+        "type": "richtext",
+        "id": "hero-text",
+        "label": "Text",
+        "default": "<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>"
+        },
+        {
+        "type": "richtext",
+        "id": "hero-text-mobile",
+        "label": "Text Mobile",
+        "default": "<p>Discover Joy: Your Ultimate Holiday Gift Destination.</p>"
+      },
+        {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FFF544"
+    },
+    {
+      "type": "color",
+      "id": "bg_hover_color",
+      "label": "Background Hover Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "text_hover_color",
+      "label": "Text Hover Color",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "hero-bottom-bg",
+      "label": "Bottom Background",
+      "default": "#F5F5F5"
+    },
+    {
+     "type": "text",
+     "id": "bottom-content",
+     "label": "Bottom Text",
+     "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+    },
+    {
+    "type": "text",
+    "id": "bottom-content-mobile",
+    "label": "Bottom Text Mobile",
+    "default": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
+  }
+       
+     ],
+"presets": [
+     { "name": "Hero",
+         "category": "Custom" } 
+        ] 
+    }
+{% endschema %}

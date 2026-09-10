@@ -1,0 +1,101 @@
+{% comment %}
+ SETTINGS FOR THE RESUABLE BUTTON
+   {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FFF544"
+    },
+    {
+      "type": "color",
+      "id": "bg_hover_color",
+      "label": "Background Hover Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "text_hover_color",
+      "label": "Text Hover Color",
+      "default": "#fff"
+    },
+{% endcomment %}
+
+<a class="btn btn-sl btn-sl-{{ s_id }}" {% if sst.btn-url-sl != blank %} href="{{ sst.btn-url-sl }}" {% endif %}>
+  {{ sst.button_text }}
+  {% render 'icon-arrow-right', s_id: s_id %}
+</a>
+
+{% style %}
+.btn-sl-{{ s_id }} {
+  display: inline-flex;
+  width: fit-content;
+  gap: 16px;
+  padding: 1.6rem 3.2rem !important;
+  font-size: 20px;
+  line-height: 1;
+  align-items: center;
+  font-weight: 400;
+  color: {{ sst.text_color }} !important;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  background-color: {{ sst.bg_color }} !important;
+  text-decoration: none;
+  overflow: hidden;
+  z-index: 1;
+  font-family: inherit;
+}
+
+.btn-sl-{{ s_id }}:hover {
+  color: {{ sst.text_hover_color }} !important;
+}
+
+.btn-sl-{{ s_id }}::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: {{ sst.bg_hover_color }} !important;
+  transform: translateX(-100%);
+  transition: all 0.7s;
+  z-index: -1;
+}
+
+.btn-sl-{{ s_id }}:hover::before {
+  width: 100%;
+  transform: translateX(0);
+}
+
+.btn-sl-{{ s_id }} svg.btn-right-arrow-{{ s_id }} path {
+  fill: {{ sst.text_color }};
+  width: 32px !important;
+  height: 16px !important;
+  transition: fill 0.3s ease;
+}
+
+.btn-sl-{{ s_id }}:hover svg.btn-right-arrow-{{ s_id }} path {
+  fill: {{ sst.text_hover_color }} !important;
+}
+@media (max-width: 750px) {
+ .btn-sl-{{ s_id }} {
+  gap: 18px;
+  padding: 1.5rem 2.8rem;
+  font-size: 16px;  
+}
+}
+
+{% endstyle %}
