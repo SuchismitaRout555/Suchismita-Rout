@@ -58,17 +58,44 @@
             "hotspot-top": 15,
             "hotspot-left": 56
           }
+        },
+        "product_block_L6eFBB": {
+          "type": "product_block",
+          "settings": {
+            "product-sl": "classic-leather-jacket",
+            "hotspot-top": 40,
+            "hotspot-left": 40
+          }
+        },
+        "product_block_xcRVBj": {
+          "type": "product_block",
+          "settings": {
+            "product-sl": "classic-varsity-top",
+            "hotspot-top": 40,
+            "hotspot-left": 40
+          }
+        },
+        "product_block_dgB3dY": {
+          "type": "product_block",
+          "settings": {
+            "product-sl": "dark-denim-top",
+            "hotspot-top": 40,
+            "hotspot-left": 40
+          }
         }
       },
       "block_order": [
         "product_block_jAF4iz",
         "product_block_xFjfkT",
-        "product_block_gNPcpL"
+        "product_block_gNPcpL",
+        "product_block_L6eFBB",
+        "product_block_xcRVBj",
+        "product_block_dgB3dY"
       ],
       "name": "Advance Product Grid",
       "settings": {
         "adv-grid-heading": "Tisso vison in the wild",
-        "gift-product": "dark-winter-jacket",
+        "gift-product": "",
         "padding_top": 40,
         "padding_bottom": 10
       }
